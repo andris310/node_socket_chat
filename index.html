@@ -1,0 +1,58 @@
+<!doctype>
+<html>
+<head>
+  <title>Node Chat</title>
+  <link rel="stylesheet" type="text/css" href="/css">
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+  <script>
+  var socket = io.connect('http://localhost:1234');
+  socket.on('connect', function(){
+    socket.emit('adduser', prompt("What's your name?"));
+  });
+
+  socket.on('updatechat', function(user, data){
+    $('#conversation').append('<b>' + user + ':</b>' + data + '<br>');
+  });
+
+  socket.on('updateusers', function(data){
+    $('#users').empty();
+    $.each(data, function(key, value){
+      $('#users').append('<div>' + key + '</div>')
+    });
+  });
+
+  $(function(){
+    $('#datasend').click(function(){
+      var message = $('#data').val();
+      $('#data').val('');
+      socket.emit('sendchat', message);
+    });
+
+    $('#data').keypress(function(e){
+      if(e.which === 13){
+        // $(this).blur();
+        $('#datasend').click();
+      }
+    });
+  });
+
+</script>
+</head>
+<body>
+  <div id='container'>
+    <div id="users_container">
+      <b>USERS</b>
+      <div id="users"></div>
+    </div>
+
+    <div id='chat_cont'>
+      <div id="conversation"></div>
+      <div id="entry">
+        <input id="data" />
+        <input type="button" id="datasend" value="send" />
+      </div>
+    </div>
+  </div>
+</body>
+</html>
