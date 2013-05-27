@@ -4,7 +4,10 @@ var http = require('http');
 var server = http.createServer(app);
 var io = require('socket.io').listen(server);
 
-server.listen(1234);
+var port = process.env.PORT || 5000;
+app.listen(port, function() {
+  console.log("Listening on " + port);
+});
 
 // routing
 
